@@ -1,0 +1,12 @@
+'authentication_service_app/' = 3000
+'users_service_app/' = 3001
+'students_service_app/' = 3002
+'staff_service_app/' = 3003
+'studies_service_app/' = 3004
+'evaluation_service_app/' = 3005
+'calendar_service_app/' = 3006
+'behavior_service_app/' = 3007
+'booking_service_app/' = 3008
+'loan_service_app/' = 3009
+'announcement_service_app/' = 3010
+'notifications_service_app/' = 3011

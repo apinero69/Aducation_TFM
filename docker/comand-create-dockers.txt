@@ -1,0 +1,4 @@
+$array = 'users', 'authentication', 'students', 'staff', 'studies', 'evaluation', 'calendar', 'behavior', 'booking', 'loan', 'announcement', 'notifications'
+$array.ForEach({docker build -t "${_}-service:v1.0" "${_}_service_app/."})
+
+

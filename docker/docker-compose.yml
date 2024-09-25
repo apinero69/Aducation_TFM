@@ -1,0 +1,183 @@
+networks:
+  internal-net:
+    external: true
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+          gateway: 172.19.0.1
+
+volumes:
+  pgdata:
+
+services:
+  db:
+    image: postgres
+    container_name: database
+    environment:
+      POSTGRES_DB: "sistemdatabase"
+      POSTGRES_USER: "alberto"
+      POSTGRES_PASSWORD: "password"
+    ports:
+      - "5432:5432"
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.14
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  users-service:
+    container_name: users
+    image: users-service:v1.0
+    restart: always
+    ports:
+      - 3001:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.3
+    depends_on:
+      - db
+
+  authentication-service:
+    container_name: authentication
+    image: authentication-service:v1.0
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.2
+    depends_on:
+      - db
+      - users-service
+
+  students-service:
+    container_name: students
+    image: students-service:v1.0
+    restart: always
+    ports:
+      - 3002:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.4
+    depends_on:
+      - db
+      - authentication-service
+
+  staff-service:
+    container_name: staff
+    image: staff-service:v1.0
+    restart: always
+    ports:
+      - 3003:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.5
+    depends_on:
+      - db
+      - students-service
+
+  studies-service:
+    container_name: studies
+    image: studies-service:v1.0
+    restart: always
+    ports:
+      - 3004:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.6
+    depends_on:
+      - db
+      - staff-service
+      - students-service
+
+  evaluation-service:
+    container_name: evaluation
+    image: evaluation-service:v1.0
+    restart: always
+    ports:
+      - 3005:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.7
+    depends_on:
+      - db
+      - studies-service
+
+  calendar-service:
+    container_name: calendar
+    image: calendar-service:v1.0
+    restart: always
+    ports:
+      - 3006:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.8
+    depends_on:
+      - db
+      - evaluation-service
+
+  behavior-service:
+    container_name: behavior
+    image: behavior-service:v1.0
+    restart: always
+    ports:
+      - 3007:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.9
+    depends_on:
+      - db
+      - calendar-service
+
+  booking-service:
+    container_name: booking
+    image: booking-service:v1.0
+    restart: always
+    ports:
+      - 3008:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.10
+    depends_on:
+      - db
+      - behavior-service
+
+  loan-service:
+    container_name: loan
+    image: loan-service:v1.0
+    restart: always
+    ports:
+      - 3009:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.11
+    depends_on:
+      - db
+      - booking-service
+
+  announcement-service:
+    container_name: announcement
+    image: announcement-service:v1.0
+    restart: always
+    ports:
+      - 3010:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.12
+    depends_on:
+      - db
+      - loan-service
+
+  notifications-service:
+    container_name: notifications
+    image: notifications-service:v1.0
+    restart: always
+    ports:
+      - 3011:3000
+    networks:
+      internal-net:
+        ipv4_address: 172.19.0.13
+    depends_on:
+      - db
+      - announcement-service
